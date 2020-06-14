@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Blog</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+		
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+	</head>
+
+	<body style="padding: 20px;">
+		<form action="" method="POST" onsubmit="event.preventDefault(); post_blog();" id="new_post_form">
+			<input class="form-control" type="text" name="heading" id="heading" placeholder="Heading" autocomplete="off" >	
+			<br>
+			<textarea rows="10" class="form-control" type="text" name="description" id="description" placeholder="Write your post here"></textarea>
+			<br>
+			<input type="submit" value="Post" class="btn btn-primary">
+		</form>
+
+		<br><br>
+
+		<div id="blogs">
+			
+		</div>
+
+		<script type="text/javascript">			
+			var token = "no token supplied";
+
+			function load_blog_posts() {
+			    $.get(atob("aHR0cHM6Ly93d3cua2l0ZWludGVsbGVjdC5jb20vZWxsZS9nZXRfYWxsX2Jsb2dzLz90b2tlbj0=")+token, {})
+			    .done(function(data){
+			    	$("#blogs").empty();
+			    	$("#blogs").html(data['html_data']);
+			    })
+
+			    .fail(function(xhr, status, error) {			        
+			        console.log("failed with status "+status+"\nError: "+error + "\nxhr: "+xhr);
+					alert("Could not load blog");
+			    });
+			}
+
+			function post_blog() {
+			    var params = {};
+			    params["heading"] = $("#heading").val();
+			    params["description"] = $("#description").val();
+
+			    $.post(atob("aHR0cHM6Ly93d3cua2l0ZWludGVsbGVjdC5jb20vZWxsZS9wb3N0X25ld19ibG9nLz90b2tlbj0=")+token, params)
+			    .done(function(data){
+			        console.log(data);
+			        $("#new_post_form").trigger("reset");
+			        load_blog_posts();
+			        alert("Done");
+			    })
+
+			    .fail(function(xhr, status, error) {
+			        alert("Could not post");
+			        console.log("failed with status "+status+"\nError: "+error + "\nxhr: "+xhr);
+			    });
+			    return false;
+
+			}
+
+			token = window.prompt("Enter your name: ");
+			load_blog_posts();
+
+		</script>
+
+
+	</body>
+
+</html>
